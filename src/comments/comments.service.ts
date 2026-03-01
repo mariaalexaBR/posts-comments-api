@@ -35,6 +35,12 @@ export class CommentsService {
   async findByPost(postId: string, paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
 
+    const post = await this.postModel.findById(postId).exec();
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
     const skip = (page - 1) * limit;
 
     const [items, total] = await Promise.all([
