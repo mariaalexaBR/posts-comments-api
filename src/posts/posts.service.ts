@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
@@ -18,6 +18,10 @@ export class PostsService {
   }
 
   async bulkCreate(createPostsDto: CreatePostDto[]): Promise<Post[]> {
+    if (!createPostsDto || createPostsDto.length === 0) {
+      throw new BadRequestException('Posts array cannot be empty');
+    }
+
     return this.postModel.insertMany(createPostsDto);
   }
 

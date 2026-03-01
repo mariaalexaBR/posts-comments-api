@@ -10,38 +10,48 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { ApiResponse } from '../common/responses/api-response';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) { }
+  constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  async create(@Body() createPostDto: CreatePostDto) {
+    const post = await this.postsService.create(createPostDto);
+    return ApiResponse.success(post, 'Post created successfully');
   }
 
   @Post('bulk')
-  bulkCreate(@Body() createPostsDto: CreatePostDto[]) {
-    return this.postsService.bulkCreate(createPostsDto);
+  async bulkCreate(@Body() createPostsDto: CreatePostDto[]) {
+    const posts = await this.postsService.bulkCreate(createPostsDto);
+    return ApiResponse.success(posts, 'Posts created successfully');
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  async findAll() {
+    const posts = await this.postsService.findAll();
+    return ApiResponse.success(posts, 'Posts retrieved successfully');
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const post = await this.postsService.findOne(id);
+    return ApiResponse.success(post, 'Post retrieved successfully');
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(id, updatePostDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    const updatedPost = await this.postsService.update(id, updatePostDto);
+    return ApiResponse.success(updatedPost, 'Post updated successfully');
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.postsService.remove(id);
+    return ApiResponse.success(null, 'Post deleted successfully');
   }
 }
