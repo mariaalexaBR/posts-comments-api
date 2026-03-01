@@ -10,7 +10,6 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ApiResponse } from '../common/responses/api-response';
 
 @Controller('posts')
 export class PostsController {
@@ -20,26 +19,22 @@ export class PostsController {
 
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
-    const post = await this.postsService.create(createPostDto);
-    return ApiResponse.success(post, 'Post created successfully');
+    return await this.postsService.create(createPostDto);
   }
 
   @Post('bulk')
   async bulkCreate(@Body() createPostsDto: CreatePostDto[]) {
-    const posts = await this.postsService.bulkCreate(createPostsDto);
-    return ApiResponse.success(posts, 'Posts created successfully');
+    return await this.postsService.bulkCreate(createPostsDto);
   }
 
   @Get()
   async findAll() {
-    const posts = await this.postsService.findAll();
-    return ApiResponse.success(posts, 'Posts retrieved successfully');
+    return await this.postsService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const post = await this.postsService.findOne(id);
-    return ApiResponse.success(post, 'Post retrieved successfully');
+    return await this.postsService.findOne(id);
   }
 
   @Put(':id')
@@ -47,13 +42,11 @@ export class PostsController {
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    const updatedPost = await this.postsService.update(id, updatePostDto);
-    return ApiResponse.success(updatedPost, 'Post updated successfully');
+    return await this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    await this.postsService.remove(id);
-    return ApiResponse.success(null, 'Post deleted successfully');
+    return await this.postsService.remove(id);
   }
 }

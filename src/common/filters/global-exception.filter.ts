@@ -8,7 +8,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ApiResponse } from '../responses/api-response';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -18,7 +17,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
+    let message: string | string[] = 'Internal server error';
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
@@ -32,8 +31,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     }
 
-    response
-      .status(status)
-      .json(ApiResponse.error(message, status));
+    response.status(status).json({
+      success: false,
+      message,
+      data: null,
+      path: request.url,
+      timestamp: new Date().toISOString(),
+    });
   }
 }
