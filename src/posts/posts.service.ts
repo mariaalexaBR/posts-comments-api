@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class PostsService {
@@ -25,8 +26,30 @@ export class PostsService {
     return this.postModel.insertMany(createPostsDto);
   }
 
-  async findAll(): Promise<Post[]> {
-    return this.postModel.find().sort({ createdAt: -1 }).exec();
+  async findAll(paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
+
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.postModel
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.postModel.countDocuments(),
+    ]);
+
+    return {
+      items,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string): Promise<Post> {

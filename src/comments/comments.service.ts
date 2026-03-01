@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Post, PostDocument } from '../posts/schemas/post.schema';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class CommentsService {
@@ -31,16 +32,32 @@ export class CommentsService {
     return await comment.save();
   }
 
-  async findByPost(postId: string) {
-    const comments = await this.commentModel.find({
-      postId: new Types.ObjectId(postId),
-    });
+  async findByPost(postId: string, paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
 
-    if (!comments.length) {
-      throw new NotFoundException('No comments found for this post');
-    }
+    const skip = (page - 1) * limit;
 
-    return comments;
+    const [items, total] = await Promise.all([
+      this.commentModel
+        .find({ postId: new Types.ObjectId(postId) })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.commentModel.countDocuments({
+        postId: new Types.ObjectId(postId),
+      }),
+    ]);
+
+    return {
+      items,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async remove(id: string) {

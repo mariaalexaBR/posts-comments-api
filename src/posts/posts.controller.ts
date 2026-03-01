@@ -10,6 +10,8 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { Query } from '@nestjs/common';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -28,8 +30,8 @@ export class PostsController {
   }
 
   @Get()
-  async findAll() {
-    return await this.postsService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto) {
+    return this.postsService.findAll(paginationDto);
   }
 
   @Get(':id')
