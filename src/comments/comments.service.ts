@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { Post, PostDocument } from '../posts/schemas/post.schema';
 
 @Injectable()
 export class CommentsService {
@@ -10,9 +11,18 @@ export class CommentsService {
   constructor(
     @InjectModel(Comment.name)
     private readonly commentModel: Model<CommentDocument>,
+    @InjectModel(Post.name)
+    private readonly postModel: Model<PostDocument>,
   ) { }
 
   async create(createCommentDto: CreateCommentDto) {
+
+    const post = await this.postModel.findById(createCommentDto.postId);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
     const comment = new this.commentModel({
       ...createCommentDto,
       postId: new Types.ObjectId(createCommentDto.postId),
