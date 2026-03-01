@@ -14,7 +14,8 @@ export class PostsController {
 
   @Get()
   findAll() {
-    return this.postsService.findAll();
+    return 'Posts route working';
+    //return this.postsService.findAll();
   }
 
   @Get(':id')
