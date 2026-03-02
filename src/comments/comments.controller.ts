@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Query, BadRequestException } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { Query } from '@nestjs/common';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -17,12 +16,12 @@ export class CommentsController {
     return await this.commentsService.create(createCommentDto);
   }
 
-  @Get('post/:postId')
+  @Get()
   async findByPost(
-    @Param('postId') postId: string,
-    @Query() paginationDto: PaginationDto,
+    @Query('postId') postId: string,
+    @Query() pagination: PaginationDto,
   ) {
-    return this.commentsService.findByPost(postId, paginationDto);
+    return this.commentsService.findByPost(postId, pagination);
   }
 
   @UseGuards(JwtAuthGuard)

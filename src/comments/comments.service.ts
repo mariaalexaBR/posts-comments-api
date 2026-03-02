@@ -5,6 +5,7 @@ import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Post, PostDocument } from '../posts/schemas/post.schema';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { ApiResponse } from '../common/responses/api-response';
 
 @Injectable()
 export class CommentsService {
@@ -33,6 +34,11 @@ export class CommentsService {
   }
 
   async findByPost(postId: string, paginationDto: PaginationDto) {
+    
+    if (!postId) {
+      throw new NotFoundException('postId query param is required');
+    }
+
     const { page = 1, limit = 10 } = paginationDto;
 
     const post = await this.postModel.findById(postId).exec();
