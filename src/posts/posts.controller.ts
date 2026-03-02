@@ -15,18 +15,19 @@ import { PaginationDto } from '../common/dto/pagination.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly postsService: PostsService
   ) { }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
     return await this.postsService.create(createPostDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('bulk')
   async bulkCreate(@Body() createPostsDto: CreatePostDto[]) {
     return await this.postsService.bulkCreate(createPostsDto);
@@ -42,6 +43,7 @@ export class PostsController {
     return await this.postsService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -50,6 +52,7 @@ export class PostsController {
     return await this.postsService.update(id, updatePostDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.postsService.remove(id);

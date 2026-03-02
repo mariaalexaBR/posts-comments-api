@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI as string),
+    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/posts-comments-db'),
     PostsModule,
     CommentsModule,
     AuthModule,
