@@ -1,105 +1,230 @@
-# Posts & Comments API
+# 📌 Posts & Comments API
 
-Backend desarrollado con NestJS y MongoDB para la gestión de publicaciones y comentarios.
+API REST desarrollada con **NestJS + MongoDB**, que permite la gestión de Posts y Comments con:
 
-## 🚀 Tecnologías
-
-- NestJS
-- MongoDB
-- Mongoose
-- TypeScript
-- Class Validator
-- Docker (pendiente / opcional)
-
----
-
-## 📂 Estructura del Proyecto
-
-src/
-├── common/
-│ ├── filters/
-│ ├── responses/
-│ ├── dto/
-│ ├── utils/
-│ └── interceptors/
-├── posts/
-├── comments/
-└── main.ts
-
+- ✅ Paginación real
+- ✅ Validaciones con DTOs
+- ✅ Global Exception Filter
+- ✅ Global Response Interceptor
+- ✅ Autenticación JWT simple
+- ✅ Docker + Hot Reload
+- ✅ Colección Postman incluida
 
 ---
 
-## ⚙️ Configuración
+## 🚀 1️⃣ Clonar el repositorio
 
-### 1️⃣ Clonar repositorio
 ```bash
-git clone <repo-url>
+git clone https://github.com/mariaalexaBR/posts-comments-api.git
 cd posts-comments-api
+```
 
-### 2️⃣ Instalar dependencias
-npm install
+---
 
-### 3️⃣ Variables de entorno
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/posts-comments
+## 🐳 2️⃣ Levantar el proyecto con Docker
 
-4️⃣ Ejecutar aplicación
+Este proyecto utiliza **Docker + Docker Compose** para levantar:
+
+- MongoDB
+- Backend NestJS
+
+Ejecutar:
+
+```bash
+docker-compose up --build
+```
+
+La API quedará disponible en:
+
+```
+http://localhost:3000
+```
+
+MongoDB se ejecuta en:
+
+```
+mongodb://localhost:27017
+```
+
+### 🔄 Hot Reload habilitado
+
+El proyecto está configurado para desarrollo con:
+
+```bash
 npm run start:dev
+```
 
-http://localhost:3000/api
+Cualquier cambio en el código reinicia automáticamente el backend dentro del contenedor.
 
-POSTS
+---
 
-Crear Post
-POST /api/posts
+## 🔐 3️⃣ Autenticación JWT
 
-Body:
+Para acceder a rutas protegidas (crear, actualizar o eliminar posts):
+
+```
+POST http://localhost:3000/api/auth/login
+```
+
+**Body:**
+
+```json
 {
-  "title": "Mi post",
-  "content": "Contenido del post",
-  "author": "Alexandra"
+  "username": "admin",
+  "password": "123456"
 }
+```
 
-Obtener todos los posts
-GET /api/posts
+**Respuesta:**
 
-Obtener post por ID
-GET /api/posts/:id
+```json
+{
+  "access_token": "JWT_TOKEN"
+}
+```
 
-Actualizar post
-PUT /api/posts/:id
+**En Postman:**
 
-Eliminar post
-DELETE /api/posts/:id
+1. Ir a **Authorization**
+2. Tipo: **Bearer Token**
+3. Pegar el token
 
-Bulk Upload
-POST /api/posts/bulk
+---
 
-Body
+## 📬 4️⃣ Endpoints principales
+
+### Posts
+
+| Método | Endpoint      | Protección |
+|--------|---------------|------------|
+| GET    | /posts        | Público    |
+| GET    | /posts/:id    | Público    |
+| POST   | /posts        | 🔒 JWT     |
+| POST   | /posts/bulk   | 🔒 JWT     |
+| PUT    | /posts/:id    | 🔒 JWT     |
+| DELETE | /posts/:id    | 🔒 JWT     |
+
+### 💬 Comments
+
+| Método | Endpoint               | Protección |
+|--------|------------------------|------------|
+| GET    | /comments/post/:postId | Público    |
+| POST   | /comments              | 🔒 JWT     |
+| DELETE | /comments/:id          | 🔒 JWT     |
+
+---
+
+## 📑 5️⃣ Paginación
+
+Los endpoints GET soportan:
+
+```
+?page=1&limit=10
+```
+
+**Ejemplo:**
+
+```
+GET http://localhost:3000/api/posts?page=1&limit=2
+```
+
+**Respuesta:**
+
+```json
+{
+  "success": true,
+  "message": "Request successful",
+  "data": {
+    "items": [...],
+    "meta": {
+      "total": 2,
+      "page": 1,
+      "limit": 2,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+---
+
+## 📦 6️⃣ Carga masiva de datos
+
+Se incluye un archivo de ejemplo:
+
+```
+data/posts-bulk.json
+```
+
+Para carga masiva:
+
+```
+POST http://localhost:3000/api/posts/bulk
+```
+
+**Body:**
+
+```json
 [
   {
     "title": "Post 1",
-    "content": "Contenido 1",
-    "author": "Autor 1"
+    "body": "Contenido del post uno para carga masiva.",
+    "author": "User 1"
+  },
+  {
+    "title": "Post 2",
+    "body": "Contenido del post dos para carga masiva.",
+    "author": "User 2"
   }
 ]
+```
 
-COMMENTS
+---
 
-Crear comentario
-POST /api/comments
+## 📮 7️⃣ Colección Postman incluida
 
-Body:
-{
-  "postId": "post_object_id",
-  "name": "Alexandra",
-  "email": "alexandra@email.com",
-  "body": "Excelente post"
-}
+Se incluye:
 
-Obtener comentarios por post
-GET /api/posts/:id/comments
+```
+postman/Posts-Comments-API.postman_collection.json
+```
 
-Eliminar comentario
-DELETE /api/comments/:id
+Para usarla:
 
+1. Abrir **Postman**
+2. **Import** → Seleccionar archivo
+3. Ejecutar requests
+
+---
+
+## 🧱 8️⃣ Arquitectura
+
+```
+src/
+ ├── auth/
+ ├── posts/
+ ├── comments/
+ └── common/
+     ├── filters/
+     ├── interceptors/
+     └── dto/
+```
+
+---
+
+## 🛠 Tecnologías utilizadas
+
+- [NestJS](https://nestjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [Passport JWT](https://www.passportjs.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+## 🏁 9️⃣ Detener el proyecto
+
+```bash
+docker-compose down
+```
