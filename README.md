@@ -58,7 +58,26 @@ Cualquier cambio en el código reinicia automáticamente el backend dentro del c
 
 ---
 
-## 🔐 3️⃣ Autenticación JWT
+## 📮 3️⃣ Importar colección Postman
+
+Se incluye la colección lista para usar en:
+
+```
+postman/Posts-Comments-API.postman_collection.json
+```
+
+**Pasos para importar:**
+
+1. Abrir **Postman**
+2. Click en **Import** (esquina superior izquierda)
+3. Seleccionar el archivo `Posts-Comments-API.postman_collection.json`
+4. La colección aparecerá con todos los endpoints listos
+
+> 💡 La colección incluye una variable `{{base_url}}` preconfigurada apuntando a `http://localhost:3000/api` y una variable `{{token}}` para el JWT que se asigna automáticamente al hacer login.
+
+---
+
+## 🔐 4️⃣ Autenticación JWT
 
 Para acceder a rutas protegidas (crear, actualizar o eliminar posts):
 
@@ -91,7 +110,7 @@ POST http://localhost:3000/api/auth/login
 
 ---
 
-## 📬 4️⃣ Endpoints principales
+## 📬 5️⃣ Endpoints principales
 
 ### Posts
 
@@ -114,7 +133,7 @@ POST http://localhost:3000/api/auth/login
 
 ---
 
-## 📑 5️⃣ Paginación
+## 📑 6️⃣ Paginación
 
 Los endpoints GET soportan:
 
@@ -148,12 +167,12 @@ GET http://localhost:3000/api/posts?page=1&limit=2
 
 ---
 
-## 📦 6️⃣ Carga masiva de datos
+## 📦 7️⃣ Carga masiva de datos
 
 Se incluye un archivo JSON de ejemplo listo para usar con la ruta de carga masiva:
 
 ```
-posts-comments-api/src/data/posts-bulk.json
+data/posts-bulk.json
 ```
 
 Para carga masiva:
@@ -179,39 +198,29 @@ POST http://localhost:3000/api/posts/bulk
 ]
 ```
 
-> 💡 Puedes copiar directamente el contenido de `src/data/posts-bulk.json` como body en Postman para poblar la base de datos rápidamente.
-
----
-
-## 📮 7️⃣ Colección Postman incluida
-
-Se incluye:
-
-```
-postman/Posts-Comments-API.postman_collection.json
-```
-
-Para usarla:
-
-1. Abrir **Postman**
-2. **Import** → Seleccionar archivo
-3. Ejecutar requests
+> 💡 Puedes copiar directamente el contenido de `data/posts-bulk.json` como body en Postman para poblar la base de datos rápidamente.
 
 ---
 
 ## 🧱 8️⃣ Arquitectura
 
 ```
-src/
- ├── auth/
- ├── posts/
- ├── comments/
- ├── data/
- │   └── posts-bulk.json
- └── common/
-     ├── filters/
-     ├── interceptors/
-     └── dto/
+posts-comments-api/
+├── src/
+│   ├── auth/
+│   ├── posts/
+│   ├── comments/
+│   └── common/
+│       ├── filters/
+│       ├── interceptors/
+│       └── dto/
+├── data/
+│   └── posts-bulk.json
+├── postman/
+│   └── Posts-Comments-API.postman_collection.json
+├── docker-compose.yml
+├── package.json
+└── README.md
 ```
 
 ---
