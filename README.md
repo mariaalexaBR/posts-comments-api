@@ -150,10 +150,10 @@ GET http://localhost:3000/api/posts?page=1&limit=2
 
 ## 📦 6️⃣ Carga masiva de datos
 
-Se incluye un archivo de ejemplo:
+Se incluye un archivo JSON de ejemplo listo para usar con la ruta de carga masiva:
 
 ```
-data/posts-bulk.json
+posts-comments-api/src/data/posts-bulk.json
 ```
 
 Para carga masiva:
@@ -178,6 +178,8 @@ POST http://localhost:3000/api/posts/bulk
   }
 ]
 ```
+
+> 💡 Puedes copiar directamente el contenido de `src/data/posts-bulk.json` como body en Postman para poblar la base de datos rápidamente.
 
 ---
 
@@ -204,6 +206,8 @@ src/
  ├── auth/
  ├── posts/
  ├── comments/
+ ├── data/
+ │   └── posts-bulk.json
  └── common/
      ├── filters/
      ├── interceptors/
