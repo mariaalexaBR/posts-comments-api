@@ -19,11 +19,19 @@ export class PostsService {
   }
 
   async bulkCreate(createPostsDto: CreatePostDto[]): Promise<Post[]> {
+
     if (!createPostsDto || createPostsDto.length === 0) {
       throw new BadRequestException('Posts array cannot be empty');
     }
 
-    return this.postModel.insertMany(createPostsDto);
+    const now = Date.now();
+
+    const postsWithOrder = createPostsDto.map((post, index) => ({
+      ...post,
+      createdAt: new Date(now + index)
+    }));
+
+    return this.postModel.insertMany(postsWithOrder);
   }
 
   async findAll(paginationDto: PaginationDto) {
